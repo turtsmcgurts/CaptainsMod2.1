@@ -722,17 +722,20 @@ end
 function Plugin: ReceiveRemovePlayer(Message)
    CaptainMenu: RemoveFromList(Message.steamid, Message.name) 
 end
-function Plugin:ReceiveCloseCaptainMenu(Message)	
+function Plugin: ReceiveCloseCaptainMenu(Message)	
 	CaptainMenu:Destroy()
 end
-function Plugin:ReceiveServerAskComm(Message)	
+function Plugin: ReceiveCloseStatusMenu(Message)	
+	ReadyStatusMenu:Destroy()
+end
+function Plugin: ReceiveServerAskComm(Message)	
 	--server asking us to command for Message.team_number
     CommMenu: Create() 
 end
-function Plugin:ReceiveServerSetCaptainCheckbox(Message)	
+function Plugin: ReceiveServerSetCaptainCheckbox(Message)	
 	CaptainMenu.ReadyCheckbox: SetChecked(false)
 end
-function Plugin:ReceiveServerUpdateTeam(Message)	
+function Plugin: ReceiveServerUpdateTeam(Message)	
     if (self.dt.islive) then return end
 
 	--server informing us about team status changes (name, ready)

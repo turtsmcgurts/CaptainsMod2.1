@@ -31,6 +31,7 @@ function Plugin:SetupDataTable()
 	self:AddNetworkMessage("AddPlayer", PlayerData, "Client" ) --sent by server to client to add a client to the captains player list
 	self:AddNetworkMessage("RemovePlayer", PlayerData, "Client" ) --sent by server to client to remove a client from the captains player list
 	self:AddNetworkMessage("CloseCaptainMenu", {}, "Client" ) --sent by server to close the captain menu
+	self:AddNetworkMessage("CloseReadyStatusMenu", {}, "Client" ) --sent by server to close the ready status menu
 	self:AddNetworkMessage("ResetPlayerList", {}, "Client" ) --sent by server to tell a captain to reset their player-list
     self:AddNetworkMessage("ServerUpdateTeam", TeamData, "Client" ) --sent by server to update the clients of a teams ready/name status
     self:AddNetworkMessage("ServerAskComm", {}, "Client" ) --sent by server to ask a player if he would command.

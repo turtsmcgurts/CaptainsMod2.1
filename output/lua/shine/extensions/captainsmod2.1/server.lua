@@ -197,6 +197,12 @@ function NetworkSend: CloseCaptainMenu(Client)
 	if (not Client) then return end
 	Plugin:SendNetworkMessage(Client, "CloseCaptainMenu", {}, true)
 end
+function NetworkSend: CloseReadyStatusMenu(Client)
+	--Tell this client to close his captain menu if he hasn't already
+	if (not Plugin.dt.enabled) then return end
+	if (not Client) then return end
+	Plugin: SendNetworkMessage(Client, "CloseReadyStatusMenu", {}, true)
+end
 function NetworkSend: ServerAskComm(Client)
     -- ask this client if they would like to command
 	if (not Plugin.dt.enabled) then return end
@@ -310,6 +316,8 @@ function Plugin: StartGame(Gamerules)
 	Gamerules.countdownTime = 5
 	Gamerules.lastCountdownPlayed = nil
 
+    Plugin: DestroyUIForAll()
+    
     self.dt.islive = true
 end
 function Plugin: EndGame(Gamerules, WinningTeam)
@@ -645,6 +653,15 @@ function Plugin: GetTeamName(team_number, capital)
 		end
 	end
 end
+function Plugin: DestroyUIForAll()
+	for _, target_client in ipairs(Shine:GetAllClients()) do
+        NetworkSend: CloseReadyStatusMenu(target_client)
+        
+        if (is_client_captain[target_client]) then
+            NetworkSend: CloseCaptainMenu(target_client)
+        end
+    end
+end
 --}}}
 
 ---{{{ Shine Misc - CreateCommands / Initialise / Cleanup
@@ -686,7 +703,7 @@ function Plugin: ClientConfirmConnect (Client)
 
     Plugin: NotifyDebug(Player, "debugmode is on.", true)
 end
-function Plugin:ClientDisconnect(Client)
+function Plugin: ClientDisconnect(Client)
     if (not self.dt.enabled) then return end
     
     local name = Client:GetControllingPlayer():GetName()
@@ -715,6 +732,8 @@ function Plugin: CreateCommands()
 	local function Captain(Client)
 		if (not self.dt.enabled) then return end
 		if (not Client) then return end
+        if (self.dt.islive) then Plugin: NotifyRed(Client, "Game is already live.") end
+        
 		local Player = Client:GetControllingPlayer()
 		local team_number = Player:GetTeamNumber()
         local steamid = Client:GetUserId()
